@@ -9,6 +9,7 @@ import {
   crearCliente,
   elegirServidor,
   leerVinculo,
+  vinculoConTunel,
   type ClienteApi,
   type Estado,
   type Mensaje,
@@ -108,6 +109,16 @@ export function ProveedorKiosco({ children }: { children: ReactNode }) {
   }, [vinculo, intento]);
 
   const reconectar = useCallback(() => setIntento((i) => i + 1), []);
+
+  // La dirección del túnel que informa ERIK reemplaza a la guardada (la temporal de ngrok cambia sola)
+  useEffect(() => {
+    if (!vinculo || !estado) return;
+    const nuevo = vinculoConTunel(vinculo, estado.tunel);
+    if (!nuevo) return;
+    guardar(CLAVE_VINCULO, JSON.stringify({ app: 'erik-kiosco', ...nuevo }))
+      .then(() => setVinculo(nuevo))
+      .catch((e) => console.warn('[kiosco] No se pudo guardar la dirección nueva del túnel', e));
+  }, [vinculo, estado]);
 
   // Sin conexión: se reintenta solo cada tantos segundos
   useEffect(() => {

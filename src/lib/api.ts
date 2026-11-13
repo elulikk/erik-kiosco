@@ -23,6 +23,7 @@ export type Estado = {
   texto_pausa: string;
   minutos_inactividad: number;
   rubros: string[];
+  tunel?: string | null; // dirección vigente del túnel ngrok (la temporal cambia en cada arranque)
   version: string;
 };
 
@@ -70,6 +71,17 @@ function limpiarUrl(url: unknown): string | null {
   if (typeof url !== 'string') return null;
   const limpia = url.trim().replace(/\/+$/, '');
   return /^https?:\/\/[^\s/]+/i.test(limpia) ? limpia : null;
+}
+
+/**
+ * Si ERIK informa otra dirección de túnel que la guardada, devuelve el vínculo actualizado (si no, null).
+ * Así la tablet se entera sola cuando ngrok cambia la dirección temporal, mientras está en el wifi.
+ */
+export function vinculoConTunel(vinculo: Vinculo, tunelInformado: string | null | undefined): Vinculo | null {
+  if (tunelInformado === undefined) return null; // ERIK viejo: no informa el túnel
+  const tunel = limpiarUrl(tunelInformado);
+  if (!tunel || tunel === vinculo.tunel) return null; // sin túnel ahora: se conserva el último conocido
+  return { ...vinculo, tunel };
 }
 
 /** Lee el texto del QR. Devuelve null si no es un QR de ERIK. */

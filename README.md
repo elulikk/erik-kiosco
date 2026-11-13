@@ -14,7 +14,7 @@ le pide los datos a MAGNETO. Diseño completo en `../docs/kiosco_tablet.md`.
 | `/catalogo?q=` | Grilla con foto, precio y si hay. Si no hay exactamente eso, avisa que muestra lo más parecido. |
 | `/producto/[codigo]` | Ficha con foto grande, descripción y «Preguntarle a ERIK». |
 | `/escaner` | Cámara (de atrás o de adelante) que lee el código de barras y abre la ficha. |
-| `/vincular` | Escanear el QR de la pestaña «Tablet» de ERIK (en la web se pega el texto del QR). |
+| `/vincular` | Escanear el QR de la pestaña «Tablet» de ERIK (con la cámara de atrás o la de adelante). Si la cámara no puede, «Escribir el código a mano» acepta lo que copia «Copiar código» en ERIK. |
 | `/ajustes` | Para el personal: **mantener apretado el logo de MAG 3 segundos**. Pide un PIN de 4 números que se elige la primera vez. Conexión, volver a vincular, cambiar PIN, desvincular. |
 
 Encima de todo: si ERIK la pone en pausa, se ve el aviso de pausa; sin conexión, «Sin conexión con el local»

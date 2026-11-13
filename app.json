@@ -1,0 +1,47 @@
+{
+  "expo": {
+    "name": "ERIK Kiosco",
+    "slug": "erik-kiosco",
+    "version": "1.0.0",
+    "orientation": "landscape",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "backgroundColor": "#14181f",
+    "android": {
+      "package": "com.magtecnologia.erikkiosco",
+      "adaptiveIcon": {
+        "backgroundColor": "#14181f",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      "expo-image",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "La tablet usa la cámara para leer códigos de barras y el QR de ERIK."
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
+        }
+      ]
+    ],
+    "scheme": "erikkiosco",
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}

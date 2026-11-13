@@ -48,10 +48,11 @@ Igual que MAGNETITO (JDK 17 y SDK de Android ya instalados en esta PC):
 
 ```bash
 npx expo prebuild -p android --clean
-cd android && gradlew.bat assembleRelease -PreactNativeArchitectures=arm64-v8a
+cd android && gradlew.bat assembleRelease -PreactNativeArchitectures=armeabi-v7a,arm64-v8a
 copy app\build\outputs\apk\release\app-release.apk ..\dist\erik-kiosco.apk
 ```
 
-`android/` y `dist/` no se commitean. Sale firmado con la clave de debug (sirve para instalarlo en la tablet).
+Va con `armeabi-v7a`: el Galaxy Tab A7 Lite del local trae Android de 32 bits (sin eso, «el paquete no es
+válido»). `android/` y `dist/` no se commitean. Sale firmado con la clave de debug (sirve para instalarlo en la tablet).
 En la tablet: instalar, abrir, escanear el QR de ERIK y activar *Fijar pantalla* de Android para que nadie
 salga de la app.

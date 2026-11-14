@@ -42,3 +42,6 @@ yarn-error.*
 
 # APK armado
 /dist
+
+# Configuración local de Claude Code
+.claude/

@@ -2,7 +2,10 @@
 
 La app de la tablet del mostrador: el cliente que espera charla con ERIK, recorre el catálogo y escanea
 productos para ver el precio. Habla solo con la API de ERIK (`/api/v1/kiosco/*`, puerto 8710); ERIK es quien
-le pide los datos a MAGNETO. Diseño completo en `../docs/kiosco_tablet.md`.
+le pide los datos a MAGNETO. Diseño completo en el repo de ERIK: `C:\ERIK\docs\kiosco_tablet.md`.
+
+Es un proyecto aparte, con su propio repo: ERIK (`C:\ERIK`) tiene el canal, las rutas y la pestaña «Tablet»;
+acá está solo la app.
 
 ## Pantallas
 

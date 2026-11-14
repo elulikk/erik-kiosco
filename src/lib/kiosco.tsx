@@ -1,5 +1,6 @@
 // Estado de toda la tablet: a qué ERIK está vinculada, si hay conexión, si está en pausa, la charla en curso
-// y el reinicio por inactividad (cuando nadie la toca, borra la charla y vuelve a la pantalla de espera).
+// lo escaneado por el cliente y el reinicio por inactividad (cuando nadie la toca, borra la charla y lo
+// escaneado, y vuelve a la pantalla de espera).
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { usePathname, useRouter } from 'expo-router';
 import { borrar, guardar, leer } from './almacen';
@@ -13,12 +14,16 @@ import {
   type ClienteApi,
   type Estado,
   type Mensaje,
+  type Producto,
   type Vinculo,
 } from './api';
 
 export type Conexion = 'cargando' | 'sin-vinculo' | 'conectando' | 'conectado' | 'sin-conexion' | 'rechazado';
 
 type MensajeLocal = Mensaje & { clave: string };
+
+/** Un código leído en el escáner. Queda en la lista del costado hasta que se reinicia la tablet. */
+export type Escaneado = { codigoBarras: string; producto: Producto; cuando: number };
 
 type ContextoKiosco = {
   conexion: Conexion;
@@ -29,6 +34,7 @@ type ContextoKiosco = {
   mensajes: MensajeLocal[];
   pensando: boolean;
   atiendePersona: boolean;
+  escaneados: Escaneado[];
   vincular: (textoQr: string) => Promise<string | null>;
   desvincular: () => Promise<void>;
   guardarPin: (pin: string) => Promise<void>;
@@ -36,6 +42,9 @@ type ContextoKiosco = {
   registrarActividad: () => void;
   enviarMensaje: (texto: string) => Promise<void>;
   reiniciar: () => void;
+  /** Suma lo escaneado arriba de la lista; si ya estaba, lo sube. */
+  agregarEscaneado: (codigoBarras: string, producto: Producto) => void;
+  vaciarEscaneados: () => void;
 };
 
 const Contexto = createContext<ContextoKiosco | null>(null);
@@ -45,6 +54,7 @@ const CLAVE_PIN = 'erik_kiosco_pin';
 const SEGUNDOS_ESTADO = 15;
 const SEGUNDOS_REINTENTO = 10;
 const SEGUNDOS_CHARLA = 3;
+const MAXIMO_ESCANEADOS = 60;
 
 let contadorClaves = 0;
 const claveNueva = () => `local-${Date.now()}-${contadorClaves++}`;
@@ -64,6 +74,7 @@ export function ProveedorKiosco({ children }: { children: ReactNode }) {
   const [mensajes, setMensajes] = useState<MensajeLocal[]>([]);
   const [pensando, setPensando] = useState(false);
   const [atiendePersona, setAtiendePersona] = useState(false);
+  const [escaneados, setEscaneados] = useState<Escaneado[]>([]);
   const [intento, setIntento] = useState(0);
 
   const sesion = useRef<number | null>(null);
@@ -172,6 +183,7 @@ export function ProveedorKiosco({ children }: { children: ReactNode }) {
     setMensajes([]);
     setPensando(false);
     setAtiendePersona(false);
+    setEscaneados([]);
   }, []);
 
   const reiniciar = useCallback(() => {
@@ -188,6 +200,17 @@ export function ProveedorKiosco({ children }: { children: ReactNode }) {
   const registrarActividad = useCallback(() => {
     ultimaActividad.current = Date.now();
   }, []);
+
+  // ─── Escáner ───────────────────────────────────────────────────────────────
+  const agregarEscaneado = useCallback((codigoBarras: string, producto: Producto) => {
+    ultimaActividad.current = Date.now(); // escanear sin tocar la pantalla también es usarla
+    setEscaneados((previos) => [
+      { codigoBarras, producto, cuando: Date.now() },
+      ...previos.filter((e) => e.codigoBarras !== codigoBarras),
+    ].slice(0, MAXIMO_ESCANEADOS));
+  }, []);
+
+  const vaciarEscaneados = useCallback(() => setEscaneados([]), []);
 
   const sumarDelServidor = useCallback((nuevos: Mensaje[]) => {
     const agregar: MensajeLocal[] = [];
@@ -286,6 +309,7 @@ export function ProveedorKiosco({ children }: { children: ReactNode }) {
       mensajes,
       pensando,
       atiendePersona,
+      escaneados,
       vincular,
       desvincular,
       guardarPin,
@@ -293,9 +317,11 @@ export function ProveedorKiosco({ children }: { children: ReactNode }) {
       registrarActividad,
       enviarMensaje,
       reiniciar,
+      agregarEscaneado,
+      vaciarEscaneados,
     }),
-    [conexion, cliente, estado, vinculo, pin, mensajes, pensando, atiendePersona, vincular, desvincular, guardarPin,
-      reconectar, registrarActividad, enviarMensaje, reiniciar],
+    [conexion, cliente, estado, vinculo, pin, mensajes, pensando, atiendePersona, escaneados, vincular, desvincular,
+      guardarPin, reconectar, registrarActividad, enviarMensaje, reiniciar, agregarEscaneado, vaciarEscaneados],
   );
 
   return <Contexto.Provider value={valor}>{children}</Contexto.Provider>;

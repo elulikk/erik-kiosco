@@ -16,7 +16,7 @@ acá está solo la app.
 | `/chat` | Charla con ERIK. Los productos salen como tarjetas tocables. Si la toma un vendedor desde ERIK, se ve «Te atiende un vendedor del local». |
 | `/catalogo?q=` | Grilla con foto, precio y si hay. Si no hay exactamente eso, avisa que muestra lo más parecido. |
 | `/producto/[codigo]` | Ficha con foto grande, descripción y «Preguntarle a ERIK». |
-| `/escaner` | Cámara (de atrás o de adelante) que lee el código de barras y abre la ficha. |
+| `/escaner` | Cámara (de atrás o de adelante) que lee códigos de barras uno atrás de otro sin tocar la tablet: cada producto queda en la lista del costado (el último arriba, sin repetidos) y tocándolo se abre su ficha. La lista se borra con «Vaciar» o cuando la tablet se reinicia por inactividad o «Terminar». |
 | `/vincular` | Escanear el QR de la pestaña «Tablet» de ERIK (con la cámara de atrás o la de adelante). Si la cámara no puede, «Escribir el código a mano» acepta lo que copia «Copiar código» en ERIK. |
 | `/ajustes` | Para el personal: **mantener apretado el logo de MAG 3 segundos**. Pide un PIN de 4 números que se elige la primera vez. Conexión, volver a vincular, cambiar PIN, desvincular. |
 
